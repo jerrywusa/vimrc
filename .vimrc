@@ -312,19 +312,24 @@ endfunction
 function! ToggleWrapMode()
     if &wrap == "nowrap"
         exec "set wrap"
-        exec "nnoremap <expr> j v:count ? 'j' : 'gj'"
-        exec "nnoremap <expr> k v:count ? 'k' : 'gk'"
+        exec "nnoremap j gj"
+        exec "nnoremap k gk"
+        exec "vnoremap j gj"
+        exec "vnoremap k gk"
+        exec "nnoremap <Leader>h g^"
+        exec "nnoremap <Leader>l g$"
+        exec "vnoremap <Leader>h g^"
+        exec "vnoremap <Leader>l g$"
 
         echo "WrapMode enabled"
     else
         exec "set nowrap"
-        if (maparg("j") != "")
-            exec "unmap j"
-        endif
-        if (maparg("k") != "")
-            exec "unmap k"
-        endif
-
+        unmap j
+        unmap k
+        exec "nnoremap <Leader>h ^"
+        exec "nnoremap <Leader>l $"
+        exec "vnoremap <Leader>h ^"
+        exec "vnoremap <Leader>l $"
         echo "WrapMode disabled"
     endif
 endfunction
