@@ -322,6 +322,9 @@ function! ToggleWrapMode()
         exec "vnoremap <Leader>l g$"
         exec "nnoremap A g$a"
         exec "nnoremap I g^i"
+        exec "nnoremap dd g^vg$d"
+        exec "nnoremap yy g^vg$y"
+        exec "nnoremap V g^vg$"
         echo "WrapMode enabled"
     else
         exec "set nowrap"
@@ -333,6 +336,9 @@ function! ToggleWrapMode()
         exec "vnoremap <Leader>l $"
         unmap A
         unmap I
+        unmap dd
+        unmap yy
+        unmap V
         echo "WrapMode disabled"
     endif
 endfunction
