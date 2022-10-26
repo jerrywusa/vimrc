@@ -1,5 +1,6 @@
 autocmd VimEnter * execute "normal i"
 autocmd BufEnter *.hack :syntax sync fromstart
+autocmd BufEnter *.todo.md :match Title /^\<[A-Z]\+\>/
 
 filetype plugin indent on
 
@@ -62,6 +63,7 @@ Plug 'kshenoy/vim-signature'
 Plug 'junegunn/goyo.vim'
 Plug 'hhvm/vim-hack'
 Plug 'Valloric/YouCompleteMe'
+Plug 'aserebryakov/vim-todo-lists'
 " Plug 'dense-analysis/ale'
 " Plug 'justinmk/vim-sneak'
 call plug#end()
@@ -250,6 +252,12 @@ tnoremap <esc> <C-W>N
 " toggle wrap mode
 nnoremap <Leader>w :call ToggleWrapMode()<CR>
 
+" vim-todo-lists plugin stuff
+let g:VimTodoListsUndoneItem = '☐'
+let g:VimTodoListsDoneItem = '✓'
+let g:VimTodoListsMoveItems = 0
+let g:VimTodoListsCustomKeyMapper = 'VimTodoListsCustomMappings'
+
 " ***************************************************************************
 " ******************************** FUNCTIONS ********************************
 " ***************************************************************************
@@ -341,4 +349,12 @@ function! ToggleWrapMode()
         unmap V
         echo "WrapMode disabled"
     endif
+endfunction
+
+function! VimTodoListsCustomMappings()
+  nnoremap <Leader><Leader> :VimTodoListsToggleItem<CR>
+  vnoremap <Leader><Leader> :VimTodoListsToggleItem<CR>
+  nnoremap j j
+  nnoremap <Leader>o :VimTodoListsCreateNewItemBelow<CR>
+  nnoremap <Leader>O :VimTodoListsCreateNewItemAbove<CR>
 endfunction
