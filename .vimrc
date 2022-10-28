@@ -255,7 +255,7 @@ nnoremap <Leader>w :call ToggleWrapMode()<CR>
 " vim-todo-lists plugin stuff
 let g:VimTodoListsUndoneItem = '☐'
 let g:VimTodoListsDoneItem = '✓'
-let g:VimTodoListsMoveItems = 1
+let g:VimTodoListsMoveItems = 0
 let g:VimTodoListsCustomKeyMapper = 'VimTodoListsCustomMappings'
 
 " ***************************************************************************
