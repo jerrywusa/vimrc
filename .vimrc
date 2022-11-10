@@ -2,6 +2,13 @@ autocmd VimEnter * execute "normal i"
 autocmd BufEnter *.hack :syntax sync fromstart
 autocmd BufEnter *.todo.md :match Title /^\<[A-Z]\+\>/
 
+" keep zf folds after quitting and reopening file
+augroup remember_folds
+  autocmd!
+  autocmd BufWinLeave ?* mkview
+  autocmd BufWinEnter ?* silent! loadview
+augroup END
+
 filetype plugin indent on
 
 " set tab spacing to 2
