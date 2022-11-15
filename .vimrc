@@ -255,6 +255,7 @@ nnoremap <Leader>~ :call DeleteCurrentColorScheme()<CR>
 
 " press esc in terminal mode to enter 'normal mode'
 tnoremap <esc> <C-W>N
+tnoremap <esc><esc> <C-W>N
 
 " toggle wrap mode
 nnoremap <Leader>w :call ToggleWrapMode()<CR>
