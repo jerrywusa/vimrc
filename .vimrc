@@ -266,6 +266,8 @@ let g:VimTodoListsDoneItem = '✓'
 let g:VimTodoListsMoveItems = 0
 let g:VimTodoListsCustomKeyMapper = 'VimTodoListsCustomMappings'
 
+nnoremap <Leader>` <C-^>
+
 " ***************************************************************************
 " ******************************** FUNCTIONS ********************************
 " ***************************************************************************
@@ -326,7 +328,7 @@ function! DeleteCurrentColorScheme()
 endfunction
 
 function! ToggleWrapMode()
-    if &wrap == "nowrap"
+    if mapcheck("j") == "" 
         exec "set wrap"
         exec "nnoremap j gj"
         exec "nnoremap k gk"
