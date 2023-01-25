@@ -167,8 +167,7 @@ nnoremap <Leader>n :wincmd v <Bar>
 
 " opens terminal window to left
 nnoremap <Leader>t :wincmd v <Bar> 
-            \ :vertical resize 60 <Bar> 
-            \ :term ++curwin<CR>
+            \ :term<CR>
 
 " open undo tree
 nnoremap <Leader>u :UndotreeToggle<CR>
@@ -204,8 +203,7 @@ command Wq write | quit
 command WQ write | quit
 
 " press esc in terminal mode to enter 'normal mode'
-tnoremap <esc> <C-W>N
-tnoremap <esc><esc> <C-W>N
+tnoremap <esc><esc> <C-\><C-N>
 
 " toggle wrap mode
 nnoremap <Leader>w :call ToggleWrapMode()<CR>
