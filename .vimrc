@@ -61,6 +61,7 @@ let &t_SR.="\e[4 q" " REPLACE mode
 " 6 -> solid vertical bar
 
 call plug#begin('~/.vim/plugged')
+Plug 'morhetz/gruvbox'
 Plug 'flazz/vim-colorschemes'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-commentary'
@@ -69,51 +70,13 @@ Plug 'junegunn/fzf.vim'
 Plug 'kshenoy/vim-signature'
 Plug 'junegunn/goyo.vim'
 Plug 'hhvm/vim-hack'
-Plug 'Valloric/YouCompleteMe'
 Plug 'aserebryakov/vim-todo-lists'
-" Plug 'dense-analysis/ale'
-" Plug 'justinmk/vim-sneak'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
 colorscheme gruvbox
 set background=dark
 
-" ALE stuff
-" ***************************************************************************
-" Automatic completion
-" let g:ale_completion_enabled = 1
-" " Include the linter name (e.g. 'hack' or 'hhast'), code, and message in errors
-" let g:ale_echo_msg_format = '[%linter%]% [code]% %s'
-" " Enable HHAST - this has security implications (see below)
-" let g:ale_linters = { 'hack': ['hack', 'hhast'] }
-" " Press `K` to view the type in the gutter
-" " nnoremap <silent> K :ALEHover<CR>
-" " Type `gd` to go to definition
-" nnoremap <silent> gd :ALEGoToDefinition<CR>
-" " Meta-click (command-click) to go to definition
-" nnoremap <M-LeftMouse> <LeftMouse>:ALEGoToDefinition<CR>
-" " ale formatter
-" let g:ale_fixers = {
-" \   'hack': ['eslint']
-" \}
-" let g:ale_fix_on_save = 1
-" let g:ale_sign_error = '>>'
-" let g:ale_sign_warning = '--'
-" let g:ale_echo_msg_error_str = 'E'
-" let g:ale_echo_msg_warning_str = 'W'
-" let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-
-" show type on hover in a floating bubble
-" if v:version >= 801
-"   set balloonevalterm
-"   let g:ale_set_balloons = 1
-"   let balloondelay = 250
-" endif
-" ***************************************************************************
-
-" ycm stuff
-" set signcolumn=no
-" let g:ycm_show_diagnostics_ui = 0
 
 " netrw stuff
 let g:netrw_banner = 0
@@ -128,6 +91,14 @@ let g:goyo_height = 85
 
 " fzf stuff
 let g:fzf_preview_window = ['right:50%', 'ctrl-/']
+
+"coc stuff
+"coc formatting document
+inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1) : "\<Tab>"
+inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
+
+"coc autocomplete search highlight colorscheme
+hi CocSearch ctermfg=109
 
 " leader key
 let mapleader = " "
@@ -189,10 +160,6 @@ nnoremap tt :tab split<CR>
 nnoremap th :tabp<CR>
 nnoremap tl :tabn<CR>
 
-" YCM stuff
-nnoremap <Leader>fi :YcmCompleter FixIt<CR>
-nnoremap <Leader>f :YcmCompleter Format<CR>
-
 " opens netrw side window to left
 nnoremap <Leader>n :wincmd v <Bar> 
         \ :vertical resize 30 <Bar> 
@@ -230,28 +197,11 @@ nnoremap Y y$
 nnoremap <Leader>y ggVGy
 nnoremap <Leader>p ggVGp
 
-" colorscheme stuff
-nnoremap <Leader>1 :colorscheme gruvbox<CR>:color<CR>
-nnoremap <Leader>2 :colorscheme Atelier_SeasideDark<CR>:color<CR>
-nnoremap <Leader>3 :colorscheme molokai<CR>:color<CR>
-nnoremap <Leader>4 :colorscheme badwolf<CR>:color<CR>
-nnoremap <Leader>5 :colorscheme moonshine<CR>:color<CR>
-nnoremap <Leader>6 :colorscheme distinguished<CR>:color<CR>
-
 " command remappings for common mistyping
 command W write
 command Q quit
 command Wq write | quit
 command WQ write | quit
-
-" toggles ycm diagnostics
-nnoremap <Leader>r :call ToggleDiagnostics()<CR>
-
-" random colorscheme picker
-nnoremap <Leader>` :call RandomColorschemeSetter()<CR>
-
-" delete current colorscheme
-nnoremap <Leader>~ :call DeleteCurrentColorScheme()<CR>
 
 " press esc in terminal mode to enter 'normal mode'
 tnoremap <esc> <C-W>N
@@ -266,66 +216,12 @@ let g:VimTodoListsDoneItem = '✓'
 let g:VimTodoListsMoveItems = 0
 let g:VimTodoListsCustomKeyMapper = 'VimTodoListsCustomMappings'
 
+" switch to previously opened vim file
 nnoremap <Leader>` <C-^>
 
 " ***************************************************************************
 " ******************************** FUNCTIONS ********************************
 " ***************************************************************************
-
-function! ToggleDiagnostics()
-    if g:ycm_show_diagnostics_ui == 1
-        execute "set signcolumn=no | 
-                    \ let g:ycm_show_diagnostics_ui=0 | 
-                    \ YcmRestartServer"
-        execute "e"
-    else
-        execute "set signcolumn=yes | 
-                    \ let g:ycm_show_diagnostics_ui=1 | 
-                    \ YcmRestartServer"
-        execute "e"
-    endif
-endfunction
-
-function! RandomColorschemeSetter()
-    let currDir = getcwd()
-    exec "cd /Users/jerry/.vim/plugged/vim-colorschemes/colors"
-    let colorList = split(glob('*.vim'), '\n')
-    let randomColor = colorList[rand() % len(colorList)][0:-5]
-    try
-        exec "colorscheme " . randomColor 
-        exec "redraw"
-        echo randomColor
-    catch 
-        let toDelete = randomColor . ".vim"
-        exec "redraw"
-        echo delete(toDelete) == 0 ? 
-                    \ "SUCCESSFULLY DELETED " . toDelete
-                    \ : "FAILED TO DELETE " . toDelete
-    endtry
-    exec "cd " . currDir
-endfunction
-
-function! DeleteCurrentColorScheme()
-    let currDir = getcwd()
-    exec "cd /Users/jerry/.vim/plugged/vim-colorschemes/colors"
-
-    let defaultColorName = g:colors_name . ".vim"
-    let colorNameList = split(defaultColorName, " ")
-    let toDelete = join(colorNameList, "-")
-    let answer = confirm("DELETE " . toDelete . " ?", "&Yes\n&No", 1)
-    if answer == 1
-        exec "colorscheme gruvbox"
-        exec "set background=dark"
-        exec "redraw"
-        echo delete(toDelete) == 0 ? 
-                    \ "SUCCESSFULLY DELETED " . toDelete : 
-                    \ "FAILED TO DELETE " . toDelete
-    else
-        exec "redraw"
-        echo "FAILED TO DELETE " . toDelete
-    endif
-    exec "cd " . currDir
-endfunction
 
 function! ToggleWrapMode()
     if mapcheck("j") == "" 
