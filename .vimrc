@@ -1,6 +1,7 @@
 autocmd VimEnter * execute "normal i"
 autocmd BufEnter *.hack :syntax sync fromstart
 autocmd BufEnter *.todo.md :match Title /^\<[A-Z]\+\>/
+autocmd TermOpen * startinsert
 
 " keep zf folds after quitting and reopening file
 augroup remember_folds
@@ -19,6 +20,7 @@ autocmd Filetype html setlocal ts=2 sw=2 sts=0 expandtab
 " set tab spacing to 4
 autocmd Filetype java setlocal ts=4 sw=4 sts=0 expandtab
 autocmd Filetype c++ setlocal ts=4 sw=4 sts=0 expandtab
+autocmd Filetype c setlocal ts=2 sw=2 sts=0 expandtab
 
 syntax on
 set belloff=esc,error,wildmode
@@ -65,8 +67,6 @@ Plug 'morhetz/gruvbox'
 Plug 'flazz/vim-colorschemes'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-commentary'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
 Plug 'kshenoy/vim-signature'
 Plug 'junegunn/goyo.vim'
 Plug 'hhvm/vim-hack'
@@ -89,13 +89,17 @@ let g:netrw_list_hide = 'Icon'
 let g:goyo_width = 100
 let g:goyo_height = 85
 
-" fzf stuff
-let g:fzf_preview_window = ['right:50%', 'ctrl-/']
+" vim-todo-lists plugin stuff
+let g:VimTodoListsUndoneItem = '☐'
+let g:VimTodoListsDoneItem = '✓'
+let g:VimTodoListsMoveItems = 0
+let g:VimTodoListsCustomKeyMapper = 'VimTodoListsCustomMappings'
 
 "coc stuff
-"coc formatting document
 inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1) : "\<Tab>"
 inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 "coc autocomplete search highlight colorscheme
 hi CocSearch ctermfg=109
@@ -131,9 +135,6 @@ nnoremap <C-l> :wincmd L<CR>
 nnoremap <C-k> :wincmd K<CR>
 nnoremap <C-j> :wincmd J<CR>
 
-" puts pane in new tab
-nnoremap <Leader>t :wincmd T<CR>
-
 " creating new window
 nnoremap <Leader>\| :wincmd v<CR>
 nnoremap <Leader>_ :wincmd s<CR>
@@ -161,13 +162,14 @@ nnoremap th :tabp<CR>
 nnoremap tl :tabn<CR>
 
 " opens netrw side window to left
-nnoremap <Leader>n :wincmd v <Bar> 
-        \ :vertical resize 30 <Bar> 
-        \ :Ex<CR>
+nnoremap <Leader>n :Lex <Bar> 
+        \ :vertical resize 30<CR>
 
-" opens terminal window to left
-nnoremap <Leader>t :wincmd v <Bar> 
-            \ :term<CR>
+" opens terminal window at bottom
+nnoremap <Leader>t :wincmd s <Bar>
+            \:wincmd J <Bar>
+            \:horizontal resize 10<Bar>
+            \:term<CR>
 
 " open undo tree
 nnoremap <Leader>u :UndotreeToggle<CR>
@@ -179,9 +181,6 @@ nnoremap K :m .-2<CR>==
 " moving blocks of code
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
-
-" fzf remap
-nnoremap <Leader>fz :FZF<CR>
 
 " indenting code with tab
 nnoremap <Tab> >>
@@ -207,12 +206,6 @@ tnoremap <esc><esc> <C-\><C-N>
 
 " toggle wrap mode
 nnoremap <Leader>w :call ToggleWrapMode()<CR>
-
-" vim-todo-lists plugin stuff
-let g:VimTodoListsUndoneItem = '☐'
-let g:VimTodoListsDoneItem = '✓'
-let g:VimTodoListsMoveItems = 0
-let g:VimTodoListsCustomKeyMapper = 'VimTodoListsCustomMappings'
 
 " switch to previously opened vim file
 nnoremap <Leader>` <C-^>
