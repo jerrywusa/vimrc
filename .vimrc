@@ -4,11 +4,11 @@ autocmd BufEnter *.todo.md :match Title /^\<[A-Z]\+\>/
 autocmd TermOpen * startinsert
 
 " keep zf folds after quitting and reopening file
-augroup remember_folds
-  autocmd!
-  autocmd BufWinLeave ?* mkview
-  autocmd BufWinEnter ?* silent! loadview
-augroup END
+" augroup remember_folds
+"   autocmd!
+"   autocmd BufWinLeave ?* mkview
+"   autocmd BufWinEnter ?* silent! loadview
+" augroup END
 
 filetype plugin indent on
 
@@ -16,11 +16,11 @@ filetype plugin indent on
 autocmd Filetype javascript setlocal ts=2 sw=2 sts=0 expandtab
 autocmd Filetype css setlocal ts=2 sw=2 sts=0 expandtab
 autocmd Filetype html setlocal ts=2 sw=2 sts=0 expandtab
+autocmd Filetype cpp setlocal ts=2 sw=2 sts=0 expandtab
+autocmd Filetype c setlocal ts=2 sw=2 sts=0 expandtab
 
 " set tab spacing to 4
 autocmd Filetype java setlocal ts=4 sw=4 sts=0 expandtab
-autocmd Filetype c++ setlocal ts=4 sw=4 sts=0 expandtab
-autocmd Filetype c setlocal ts=2 sw=2 sts=0 expandtab
 
 syntax on
 set belloff=esc,error,wildmode
@@ -72,11 +72,12 @@ Plug 'junegunn/goyo.vim'
 Plug 'hhvm/vim-hack'
 Plug 'aserebryakov/vim-todo-lists'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 call plug#end()
 
 colorscheme gruvbox
 set background=dark
-
 
 " netrw stuff
 let g:netrw_banner = 0
@@ -95,11 +96,13 @@ let g:VimTodoListsDoneItem = '✓'
 let g:VimTodoListsMoveItems = 0
 let g:VimTodoListsCustomKeyMapper = 'VimTodoListsCustomMappings'
 
+" use ripgrep as default for fzf search
+let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore-vcs --hidden'
+
 "coc stuff
 inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1) : "\<Tab>"
 inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
 "coc autocomplete search highlight colorscheme
 hi CocSearch ctermfg=109
@@ -207,8 +210,23 @@ tnoremap <esc><esc> <C-\><C-N>
 " toggle wrap mode
 nnoremap <Leader>w :call ToggleWrapMode()<CR>
 
-" switch to previously opened vim file
+" switch to previously opened file
 nnoremap <Leader>` <C-^>
+
+" fzf file finder
+nnoremap <Leader>f :Files<CR>
+
+" fzf buffer finder
+nnoremap <Leader>b :Buffers<CR>
+
+
+" using alt key will send escape character. Adding these lines will remove the esc
+let &t_TI = ""
+let &t_TE = ""
+
+" map dymga raise special df keys to move backward and forward a buffer
+nnoremap <A-b> :bp<CR>
+nnoremap <A-f> :bn<CR>
 
 " ***************************************************************************
 " ******************************** FUNCTIONS ********************************
