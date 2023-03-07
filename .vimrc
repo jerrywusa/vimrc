@@ -1,6 +1,6 @@
 autocmd VimEnter * execute "normal i"
 autocmd BufEnter *.hack :syntax sync fromstart
-autocmd BufEnter *.todo.md :match Title /^\<[A-Z]\+\>/
+autocmd BufEnter *.todo.md :syntax match DiagnosticError /^\s*x.*/ | syntax match Title /^\<[A-Z]\+\>/
 autocmd TermOpen * startinsert
 
 " keep zf folds after quitting and reopening file
