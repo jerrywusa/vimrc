@@ -1,6 +1,6 @@
 autocmd VimEnter * execute "normal i"
 autocmd BufEnter *.hack :syntax sync fromstart
-autocmd BufEnter *.todo.md :syntax match DiagnosticError /^\s*x.*/ | syntax match Title /^\<[A-Z]\+\>/
+autocmd BufEnter *.todo.md :syntax match GruvboxRed /^\s*x.*/ | syntax match GruvboxGreenBold /^\s*\<[A-Z]\+\>/ | syntax match GruvboxYellow /^\s*\*.*/ | syntax match GruvboxOrange /^\s*-.*/
 autocmd TermOpen * startinsert
 
 " keep zf folds after quitting and reopening file
@@ -74,6 +74,8 @@ Plug 'aserebryakov/vim-todo-lists'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'vim-scripts/BufOnly.vim'
+Plug 'vim-airline/vim-airline'
 call plug#end()
 
 colorscheme gruvbox
@@ -168,11 +170,8 @@ nnoremap tl :tabn<CR>
 nnoremap <Leader>n :Lex <Bar> 
         \ :vertical resize 30<CR>
 
-" opens terminal window at bottom
-nnoremap <Leader>t :wincmd s <Bar>
-            \:wincmd J <Bar>
-            \:horizontal resize 10<Bar>
-            \:term<CR>
+" toggles terminal window at bottom pane
+nnoremap <Leader>t :call ToggleTerminalWindowPane()<CR>
 
 " open undo tree
 nnoremap <Leader>u :UndotreeToggle<CR>
@@ -195,7 +194,7 @@ vnoremap <S-Tab> <gv
 nnoremap Y y$
 
 " modify whole doc
-nnoremap <Leader>y ggVGy
+nnoremap <Leader>y mzggVGy`zdmz
 nnoremap <Leader>p ggVGp
 
 " command remappings for common mistyping
@@ -219,14 +218,21 @@ nnoremap <Leader>f :Files<CR>
 " fzf buffer finder
 nnoremap <Leader>b :Buffers<CR>
 
-
 " using alt key will send escape character. Adding these lines will remove the esc
 let &t_TI = ""
 let &t_TE = ""
 
 " map dymga raise special df keys to move backward and forward a buffer
-nnoremap <A-b> :bp<CR>
-nnoremap <A-f> :bn<CR>
+nnoremap <A-b> :call SkipTerminalBuffers('bn')<CR>
+nnoremap <A-f> :call SkipTerminalBuffers('bp')<CR>
+
+" airline stuff
+let g:airline#extensions#tabline#enabled = 1
+
+command Bn call SkipTerminalBuffers('bn')
+command BN call SkipTerminalBuffers('bn')
+command Bp call SkipTerminalBuffers('bp')
+command BP call SkipTerminalBuffers('bp')
 
 " ***************************************************************************
 " ******************************** FUNCTIONS ********************************
@@ -272,4 +278,59 @@ function! VimTodoListsCustomMappings()
   nnoremap j j
   nnoremap <Leader>o :VimTodoListsCreateNewItemBelow<CR>
   nnoremap <Leader>O :VimTodoListsCreateNewItemAbove<CR>
+endfunction
+
+function! ToggleTerminalWindowPane()
+  if TerminalBufExists() == 1
+    let terminalBufNum = GetTerminalBufNum()
+    let windowNumDisplayingTerminalBufNum = bufwinnr(terminalBufNum)
+    if windowNumDisplayingTerminalBufNum == -1
+        botright split
+        horizontal resize 10
+        execute "buffer " . terminalBufNum
+    else
+      execute windowNumDisplayingTerminalBufNum . "wincmd w"
+      hide
+    endif
+  else
+    botright split
+    horizontal resize 10
+    terminal
+    stopinsert
+  endif
+endfunction
+
+function! GetTerminalBufNum()
+  for bufNum in range(1, bufnr('$'))
+    if getbufvar(bufNum, '&buftype') == 'terminal'
+      return bufNum
+    endif
+  endfor
+endfunction
+
+function! TerminalBufExists()
+  let terminalBufNum = 0 
+  for bufNum in range(1, bufnr('$'))
+    if getbufvar(bufNum, '&buftype') == 'terminal'
+      return 1
+    endif
+  endfor
+  return 0
+endfunction
+
+function! SkipTerminalBuffers(direction)
+  if a:direction == "bn"
+    bn
+  elseif a:direction == "bp"
+    bp
+  endif
+  let targetBufNum = bufnr('%')
+  while buflisted(targetBufNum) && getbufvar(targetBufNum, '&buftype') == 'terminal'
+    if a:direction == "bn"
+      bn
+    elseif a:direction == "bp"
+      bp
+    endif
+    let targetBufNum = bufnr('%')
+  endwhile
 endfunction
