@@ -101,9 +101,16 @@ let g:VimTodoListsCustomKeyMapper = 'VimTodoListsCustomMappings'
 " use ripgrep as default for fzf search
 let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore-vcs --hidden'
 
-"coc stuff
-inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1) : "\<Tab>"
-inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
+" use tab and s-tab to iterate through coc snippets
+" this block must be above the block below 'coc popup list...' because the tab
+" mappings get messed up otherwise
+inoremap <expr> <TAB> coc#jumpable() ? "\<C-y>" : "\<TAB>"
+let g:coc_snippet_next = '<TAB>'
+let g:coc_snippet_prev = '<S-TAB>'
+
+"coc popup list selection stuff
+inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1) : "\<TAB>"
+inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-TAB>"
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
 "coc autocomplete search highlight colorscheme
@@ -237,11 +244,6 @@ command BP call SkipTerminalBuffers('bp')
 
 " CocAction code action stuff
 nnoremap <Leader>. <Plug>(coc-fix-current)
-
-" use tab and s-tab to iterate through coc snippets
-inoremap <expr> <TAB> pumvisible() ? "\<C-y>" : "\<TAB>"
-let g:coc_snippet_next = '<TAB>'
-let g:coc_snippet_prev = '<S-TAB>'
 
 " ***************************************************************************
 " ******************************** FUNCTIONS ********************************
