@@ -1,6 +1,6 @@
 autocmd VimEnter * execute "normal i"
 autocmd BufEnter *.hack :syntax sync fromstart
-autocmd BufEnter *.todo.md :syntax match GruvboxRed /^\s*x.*/ | syntax match GruvboxGreenBold /^\s*\<[A-Z]\+\>/ | syntax match GruvboxYellow /^\s*\*.*/ | syntax match GruvboxOrange /^\s*-.*/
+autocmd BufEnter *.todo.md :syntax match GruvboxRed /^\s*x.*/ | syntax match GruvboxGreenBold /^\s*\<[A-Z]\+\>/ | syntax match GruvboxYellow /^\s*\*.*/
 autocmd TermOpen * startinsert
 
 " keep zf folds after quitting and reopening file
@@ -229,10 +229,19 @@ nnoremap <A-f> :call SkipTerminalBuffers('bp')<CR>
 " airline stuff
 let g:airline#extensions#tabline#enabled = 1
 
+" mapping to iterate through buffers while skipping terminal buffers
 command Bn call SkipTerminalBuffers('bn')
 command BN call SkipTerminalBuffers('bn')
 command Bp call SkipTerminalBuffers('bp')
 command BP call SkipTerminalBuffers('bp')
+
+" CocAction code action stuff
+nnoremap <Leader>. <Plug>(coc-fix-current)
+
+" use tab and s-tab to iterate through coc snippets
+inoremap <expr> <TAB> pumvisible() ? "\<C-y>" : "\<TAB>"
+let g:coc_snippet_next = '<TAB>'
+let g:coc_snippet_prev = '<S-TAB>'
 
 " ***************************************************************************
 " ******************************** FUNCTIONS ********************************
