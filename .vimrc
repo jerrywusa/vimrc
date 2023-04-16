@@ -1,6 +1,6 @@
 autocmd VimEnter * execute "normal i"
 autocmd BufEnter *.hack :syntax sync fromstart
-autocmd BufEnter *.todo.md :syntax match GruvboxRed /^\s*x.*/ | syntax match GruvboxGreenBold /^\s*\<[A-Z]\+\>/ | syntax match GruvboxYellow /^\s*\*.*/
+autocmd BufEnter *.todo.md :syntax match GruvboxRed /^\s*x.*/ | syntax match GruvboxGreenBold /^\s*\<[A-Z]\+\>/ | syntax match GruvboxYellow /^\s*\*.*/ | syntax match GruvboxOrange /^\s*\-.*/
 autocmd TermOpen * startinsert
 
 " keep zf folds after quitting and reopening file
@@ -299,6 +299,7 @@ function! ToggleTerminalWindowPane()
         botright split
         horizontal resize 10
         execute "buffer " . terminalBufNum
+        startinsert
     else
       execute windowNumDisplayingTerminalBufNum . "wincmd w"
       hide
@@ -307,7 +308,6 @@ function! ToggleTerminalWindowPane()
     botright split
     horizontal resize 10
     terminal
-    stopinsert
   endif
 endfunction
 
