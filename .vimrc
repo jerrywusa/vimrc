@@ -134,6 +134,7 @@ vnoremap < <ESC>`>a><ESC>`<i<<ESC>`>2l
 vnoremap > <ESC>`>a><ESC>`<i<<ESC>`>2l
 vnoremap " <ESC>`>a"<ESC>`<i"<ESC>`>2l
 vnoremap ' <ESC>`>a'<ESC>`<i'<ESC>`>2l
+vnoremap <SPACE><SPACE> <ESC>`>a<SPACE><ESC>`<i<SPACE><ESC>`>2l
 
 " movement between screens
 nnoremap <Leader>H :wincmd h<CR>
@@ -201,7 +202,7 @@ vnoremap <S-Tab> <gv
 nnoremap Y y$
 
 " modify whole doc
-nnoremap <Leader>y mzggVGy`zdmz
+nnoremap <Leader>y mzggVGy`zdmzzz
 nnoremap <Leader>p ggVGp
 
 " command remappings for common mistyping
@@ -230,8 +231,8 @@ let &t_TI = ""
 let &t_TE = ""
 
 " map dymga raise special df keys to move backward and forward a buffer
-nnoremap <A-b> :call SkipTerminalBuffers('bn')<CR>
-nnoremap <A-f> :call SkipTerminalBuffers('bp')<CR>
+nnoremap <A-b> :call SkipTerminalBuffers('bp')<CR>
+nnoremap <A-f> :call SkipTerminalBuffers('bn')<CR>
 
 " airline stuff
 let g:airline#extensions#tabline#enabled = 1
